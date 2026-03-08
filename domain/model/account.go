@@ -6,7 +6,7 @@ import (
 )
 
 type Account struct {
-	Id             int // optimally should be an UUID_V7 string, but will use int for simplicity
+	ID             int // optimally should be an UUID_V7 string, but will use int for simplicity
 	DocumentNumber string
 }
 

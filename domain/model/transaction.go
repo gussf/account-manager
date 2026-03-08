@@ -7,8 +7,8 @@ import (
 )
 
 type Transaction struct {
-	Id            int // Should be an UUID_V7 string, but will use int for simplicity
-	AccountId     int
+	ID            int // Should be an UUID_V7 string, but will use int for simplicity
+	AccountID     int
 	OperationType OperationType
 	Amount        float64
 	EventDate     time.Time

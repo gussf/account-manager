@@ -35,7 +35,7 @@ func (s *Server) CreateAccountHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	respBody := CreateAccountResponse{
-		Id:             createdAcc.Id,
+		ID:             createdAcc.ID,
 		DocumentNumber: createdAcc.DocumentNumber,
 	}
 
@@ -59,7 +59,7 @@ func (s *Server) GetAccountHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	respBody := GetAccountResponse{
-		Id:             acc.Id,
+		ID:             acc.ID,
 		DocumentNumber: acc.DocumentNumber,
 	}
 
@@ -93,7 +93,7 @@ func (s *Server) SaveTransactionHandler(w http.ResponseWriter, r *http.Request) 
 	}
 
 	respBody := SaveTransactionResponse{
-		Id:            createdTx.Id,
+		ID:            createdTx.ID,
 		OperationType: createdTx.OperationType,
 		Amount:        createdTx.Amount,
 		EventDate:     createdTx.EventDate,

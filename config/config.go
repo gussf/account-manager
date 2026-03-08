@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/spf13/viper"
@@ -33,6 +32,5 @@ func Load() (*Config, error) {
 		return nil, err
 	}
 
-	log.Println(cfg)
 	return &cfg, nil
 }

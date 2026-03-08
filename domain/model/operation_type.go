@@ -1,10 +1,5 @@
 package model
 
-type OperationType int
-
-const (
-	NormalPurchase OperationType = iota
-	PurchaseWithInstallments
-	Withdrawal
-	CreditVoucher
-)
+type OperationType struct {
+	ID int
+}

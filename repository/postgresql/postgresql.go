@@ -51,7 +51,7 @@ func (s *Store) CreateAccount(ctx context.Context, req model.CreateAccountReques
 	}
 
 	return &model.Account{
-		Id:             id,
+		ID:             id,
 		DocumentNumber: req.DocumentNumber,
 	}, nil
 }
@@ -66,7 +66,7 @@ func (s *Store) GetAccount(ctx context.Context, accountID int) (*model.Account, 
 	}
 
 	return &model.Account{
-		Id:             foundID,
+		ID:             foundID,
 		DocumentNumber: foundDocNumber,
 	}, nil
 }
@@ -82,8 +82,8 @@ func (s *Store) SaveTransaction(ctx context.Context, req model.SaveTransactionRe
 	}
 
 	return &model.Transaction{
-		Id:            createdID,
-		AccountId:     req.AccountID,
+		ID:            createdID,
+		AccountID:     req.AccountID,
 		OperationType: req.OperationType,
 		Amount:        createdAmount,
 		EventDate:     createdEventDate,
