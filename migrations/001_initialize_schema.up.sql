@@ -5,7 +5,6 @@ CREATE TABLE accounts (
 
 CREATE TABLE operation_types (
     id SERIAL PRIMARY KEY,
-    name TEXT NOT NULL UNIQUE,
     description TEXT
 );
 

@@ -2,7 +2,7 @@ package postgresql
 
 import (
 	"errors"
-	"log"
+	"log/slog"
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
@@ -27,13 +27,13 @@ func (s *Store) runMigrations() error {
 
 	if err := m.Up(); err != nil {
 		if errors.Is(err, migrate.ErrNoChange) {
-			log.Println("database migration: no changes")
+			slog.Info("database migration: no changes")
 			return nil
 		}
 		return err
 	}
 
-	log.Println("database migration: applied successfully")
+	slog.Info("database migration: applied successfully")
 
 	return nil
 }

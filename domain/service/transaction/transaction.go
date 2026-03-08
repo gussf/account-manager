@@ -5,7 +5,7 @@ import (
 	"account-manager/repository"
 	"context"
 	"fmt"
-	"log"
+	"log/slog"
 )
 
 type Service struct {
@@ -29,7 +29,7 @@ func (s *Service) SaveTransaction(ctx context.Context, req core.SaveTransactionR
 		return nil, fmt.Errorf("resolve operation strategy for transaction: %w", err)
 	}
 
-	log.Printf("applying logic of '%s' operation to transaction\n", operationStrategy.Operation())
+	slog.Info("applying operation strategy", "operation", operationStrategy.Operation())
 	operationStrategy.Apply(&req)
 
 	createdTx, err := s.store.SaveTransaction(ctx, req)

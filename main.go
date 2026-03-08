@@ -7,19 +7,25 @@ import (
 	"account-manager/domain/service/transaction"
 	"account-manager/repository/postgresql"
 	"context"
-	"log"
+	"log/slog"
+	"os"
 )
 
 func main() {
 	ctx := context.Background()
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+	slog.SetDefault(logger)
+
 	cfg, err := config.Load()
 	if err != nil {
-		log.Fatalf("init: failed to load configuration: %s", err)
+		slog.Error("init: failed to load configuration", "error", err)
+		os.Exit(1)
 	}
 
 	pgStore, err := postgresql.NewStore(*cfg)
 	if err != nil {
-		log.Fatalf("init: failed to start postgres store: %s", err)
+		slog.Error("init: failed to start postgres store", "error", err)
+		os.Exit(1)
 	}
 
 	accSvc := account.NewService(pgStore)
@@ -28,6 +34,7 @@ func main() {
 	server := httpapi.NewServer(*cfg, accSvc, txSvc)
 	err = server.Start(ctx)
 	if err != nil {
-		log.Fatalf("init: failed to start http server: %s", err)
+		slog.Error("init: failed to start http server", "error", err)
+		os.Exit(1)
 	}
 }

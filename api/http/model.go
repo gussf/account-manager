@@ -45,3 +45,7 @@ type SaveTransactionResponse struct {
 	Amount          float64   `json:"amount"`
 	EventDate       time.Time `json:"event_date,omitempty"`
 }
+
+type ErrorMessage struct {
+	Error string `json:"error"`
+}

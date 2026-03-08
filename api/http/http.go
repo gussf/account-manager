@@ -5,7 +5,7 @@ import (
 	"account-manager/domain/core"
 	"context"
 	"fmt"
-	"log"
+	"log/slog"
 	"net/http"
 	"time"
 )
@@ -41,7 +41,7 @@ func (s *Server) registerRoutes(mux *http.ServeMux) {
 
 func (s *Server) Start(ctx context.Context) error {
 	addr := fmt.Sprintf(":%d", s.port)
-	log.Printf("server running on %s\n", addr)
+	slog.Info("server running", "address", addr)
 	err := http.ListenAndServe(addr, s.handler)
 	if err != nil {
 		return err
