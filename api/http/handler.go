@@ -2,7 +2,6 @@ package http
 
 import (
 	"encoding/json"
-	"io"
 	"log/slog"
 	"net/http"
 	"strconv"
@@ -10,19 +9,11 @@ import (
 
 func (s *Server) CreateAccountHandler(w http.ResponseWriter, r *http.Request) {
 	slog.Info("received create account request")
-	defer r.Body.Close()
-	body, err := io.ReadAll(r.Body)
-	if err != nil {
-		slog.Error("failed to read create account request body", "error", err, "status", http.StatusBadRequest)
-		sendResponse(w, http.StatusBadRequest, errorMessage("failed to read request body"))
-		return
-	}
 
 	var req CreateAccountRequest
-	err = json.Unmarshal(body, &req)
-	if err != nil {
-		slog.Error("failed to unmarshal create account request body", "error", err, "status", http.StatusBadRequest)
-		sendResponse(w, http.StatusBadRequest, errorMessage("failed to unmarshal request body: "+err.Error()))
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		slog.Error("failed to decode create account request body", "error", err, "status", http.StatusBadRequest)
+		sendResponse(w, http.StatusBadRequest, errorMessage("invalid request body: "+err.Error()))
 		return
 	}
 
@@ -72,19 +63,11 @@ func (s *Server) GetAccountHandler(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) SaveTransactionHandler(w http.ResponseWriter, r *http.Request) {
 	slog.Info("received save transaction request")
-	defer r.Body.Close()
-	body, err := io.ReadAll(r.Body)
-	if err != nil {
-		slog.Error("failed to read save transaction request body", "error", err, "status", http.StatusBadRequest)
-		sendResponse(w, http.StatusBadRequest, errorMessage("failed to read request body"))
-		return
-	}
 
 	var req SaveTransactionRequest
-	err = json.Unmarshal(body, &req)
-	if err != nil {
-		slog.Error("failed to unmarshal save transaction body", "error", err, "status", http.StatusBadRequest)
-		sendResponse(w, http.StatusBadRequest, errorMessage("failed to unmarshal request body: "+err.Error()))
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		slog.Error("failed to decode save transaction request body", "error", err, "status", http.StatusBadRequest)
+		sendResponse(w, http.StatusBadRequest, errorMessage("invalid request body: "+err.Error()))
 		return
 	}
 

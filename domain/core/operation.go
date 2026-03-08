@@ -10,14 +10,14 @@ const (
 )
 
 const (
-	PurchaseOperationame                  = "Purchase"
+	PurchaseOperationName                 = "Purchase"
 	PurchaseWithInstallmentsOperationName = "PurchaseWithInstallments"
 	WithdrawalOperationName               = "Withdrawal"
 	CreditVoucherOperationName            = "CreditVoucher"
 )
 
 var operationStrategyByID = map[int]OperationStrategy{
-	PurchaseOperationType:                 &DebitStrategy{operation: PurchaseOperationame},
+	PurchaseOperationType:                 &DebitStrategy{operation: PurchaseOperationName},
 	PurchaseWithInstallmentsOperationType: &DebitStrategy{operation: PurchaseWithInstallmentsOperationName},
 	WithdrawalOperationType:               &DebitStrategy{operation: WithdrawalOperationName},
 	CreditVoucherOperationType:            &CreditStrategy{operation: CreditVoucherOperationName},
