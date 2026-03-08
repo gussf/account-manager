@@ -1,10 +1,11 @@
 package transaction
 
 import (
-	"account-manager/domain/model"
+	"account-manager/domain/core"
 	"account-manager/repository"
 	"context"
 	"fmt"
+	"log"
 )
 
 type Service struct {
@@ -17,11 +18,19 @@ func NewService(store repository.Store) *Service {
 	}
 }
 
-func (s *Service) SaveTransaction(ctx context.Context, req model.SaveTransactionRequest) (*model.Transaction, error) {
+func (s *Service) SaveTransaction(ctx context.Context, req core.SaveTransactionRequest) (*core.Transaction, error) {
 	err := req.Validate()
 	if err != nil {
 		return nil, fmt.Errorf("validate save transaction request: %w", err)
 	}
+
+	operationStrategy, err := core.ResolveOperationStrategy(req.OperationTypeID)
+	if err != nil {
+		return nil, fmt.Errorf("resolve operation strategy for transaction: %w", err)
+	}
+
+	log.Printf("applying logic of '%s' operation to transaction\n", operationStrategy.Operation())
+	operationStrategy.Apply(&req)
 
 	createdTx, err := s.store.SaveTransaction(ctx, req)
 	if err != nil {

@@ -3,7 +3,7 @@ CREATE TABLE accounts (
     document_number TEXT NOT NULL UNIQUE
 );
 
-CREATE TABLE operation_type (
+CREATE TABLE operation_types (
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL UNIQUE,
     description TEXT
@@ -20,5 +20,5 @@ CREATE TABLE transactions (
         REFERENCES accounts(id),
     CONSTRAINT fk_operation_type
         FOREIGN KEY(operation_type_id) 
-        REFERENCES operation_type(id)
+        REFERENCES operation_types(id)
 );

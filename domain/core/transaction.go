@@ -1,4 +1,4 @@
-package model
+package core
 
 import (
 	"context"
@@ -7,11 +7,11 @@ import (
 )
 
 type Transaction struct {
-	ID            int // Should be an UUID_V7 string, but will use int for simplicity
-	AccountID     int
-	OperationType OperationType
-	Amount        float64
-	EventDate     time.Time
+	ID              int // Should be an UUID_V7 string, but will use int for simplicity
+	AccountID       int
+	OperationTypeID int
+	Amount          float64
+	EventDate       time.Time
 }
 
 type TransactionService interface {
@@ -19,9 +19,9 @@ type TransactionService interface {
 }
 
 type SaveTransactionRequest struct {
-	AccountID     int
-	OperationType OperationType
-	Amount        float64
+	AccountID       int
+	OperationTypeID int
+	Amount          float64
 }
 
 func (s *SaveTransactionRequest) Validate() error {

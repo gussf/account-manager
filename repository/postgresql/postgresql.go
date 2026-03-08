@@ -2,7 +2,7 @@ package postgresql
 
 import (
 	"account-manager/config"
-	"account-manager/domain/model"
+	"account-manager/domain/core"
 	"context"
 	"database/sql"
 	"fmt"
@@ -42,7 +42,7 @@ func NewStore(cfg config.Config) (*Store, error) {
 	return store, nil
 }
 
-func (s *Store) CreateAccount(ctx context.Context, req model.CreateAccountRequest) (*model.Account, error) {
+func (s *Store) CreateAccount(ctx context.Context, req core.CreateAccountRequest) (*core.Account, error) {
 	var id int
 	query := "INSERT INTO accounts (document_number) VALUES ($1) RETURNING id"
 	err := s.db.QueryRowContext(ctx, query, req.DocumentNumber).Scan(&id)
@@ -50,13 +50,13 @@ func (s *Store) CreateAccount(ctx context.Context, req model.CreateAccountReques
 		return nil, fmt.Errorf("failed to exec query: %w", err)
 	}
 
-	return &model.Account{
+	return &core.Account{
 		ID:             id,
 		DocumentNumber: req.DocumentNumber,
 	}, nil
 }
 
-func (s *Store) GetAccount(ctx context.Context, accountID int) (*model.Account, error) {
+func (s *Store) GetAccount(ctx context.Context, accountID int) (*core.Account, error) {
 	var foundID int
 	var foundDocNumber string
 	query := "SELECT id, document_number FROM accounts WHERE id=$1"
@@ -65,27 +65,27 @@ func (s *Store) GetAccount(ctx context.Context, accountID int) (*model.Account, 
 		return nil, fmt.Errorf("failed to exec query: %w", err)
 	}
 
-	return &model.Account{
+	return &core.Account{
 		ID:             foundID,
 		DocumentNumber: foundDocNumber,
 	}, nil
 }
 
-func (s *Store) SaveTransaction(ctx context.Context, req model.SaveTransactionRequest) (*model.Transaction, error) {
+func (s *Store) SaveTransaction(ctx context.Context, req core.SaveTransactionRequest) (*core.Transaction, error) {
 	var createdID int
 	var createdEventDate time.Time
 	var createdAmount float64
 	query := "INSERT INTO transactions (account_id, operation_type_id, amount, event_date) VALUES ($1, $2, $3, now()) RETURNING id, amount, event_date"
-	err := s.db.QueryRowContext(ctx, query, req.AccountID, req.OperationType, req.Amount).Scan(&createdID, &createdAmount, &createdEventDate)
+	err := s.db.QueryRowContext(ctx, query, req.AccountID, req.OperationTypeID, req.Amount).Scan(&createdID, &createdAmount, &createdEventDate)
 	if err != nil {
 		return nil, fmt.Errorf("failed to exec query: %w", err)
 	}
 
-	return &model.Transaction{
-		ID:            createdID,
-		AccountID:     req.AccountID,
-		OperationType: req.OperationType,
-		Amount:        createdAmount,
-		EventDate:     createdEventDate,
+	return &core.Transaction{
+		ID:              createdID,
+		AccountID:       req.AccountID,
+		OperationTypeID: req.OperationTypeID,
+		Amount:          createdAmount,
+		EventDate:       createdEventDate,
 	}, nil
 }

@@ -1,7 +1,7 @@
 package account
 
 import (
-	"account-manager/domain/model"
+	"account-manager/domain/core"
 	"account-manager/repository"
 	"context"
 	"errors"
@@ -18,7 +18,7 @@ func NewService(store repository.Store) *Service {
 	}
 }
 
-func (s *Service) CreateAccount(ctx context.Context, req model.CreateAccountRequest) (*model.Account, error) {
+func (s *Service) CreateAccount(ctx context.Context, req core.CreateAccountRequest) (*core.Account, error) {
 	err := req.Validate()
 	if err != nil {
 		return nil, fmt.Errorf("validate create account request: %w", err)
@@ -32,7 +32,7 @@ func (s *Service) CreateAccount(ctx context.Context, req model.CreateAccountRequ
 	return createdAcc, nil
 }
 
-func (s *Service) GetAccount(ctx context.Context, accountID int) (*model.Account, error) {
+func (s *Service) GetAccount(ctx context.Context, accountID int) (*core.Account, error) {
 	if accountID <= 0 {
 		return nil, errors.New("invalid account id")
 	}

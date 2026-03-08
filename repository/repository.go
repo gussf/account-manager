@@ -1,12 +1,12 @@
 package repository
 
 import (
-	"account-manager/domain/model"
+	"account-manager/domain/core"
 	"context"
 )
 
 type Store interface {
-	CreateAccount(ctx context.Context, req model.CreateAccountRequest) (*model.Account, error)
-	GetAccount(ctx context.Context, accountID int) (*model.Account, error)
-	SaveTransaction(ctx context.Context, req model.SaveTransactionRequest) (*model.Transaction, error)
+	CreateAccount(ctx context.Context, req core.CreateAccountRequest) (*core.Account, error)
+	GetAccount(ctx context.Context, accountID int) (*core.Account, error)
+	SaveTransaction(ctx context.Context, req core.SaveTransactionRequest) (*core.Transaction, error)
 }

@@ -9,6 +9,7 @@ import (
 )
 
 func (s *Server) CreateAccountHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("received create account request")
 	defer r.Body.Close()
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -39,10 +40,12 @@ func (s *Server) CreateAccountHandler(w http.ResponseWriter, r *http.Request) {
 		DocumentNumber: createdAcc.DocumentNumber,
 	}
 
+	log.Printf("create account response: %+v\n", respBody)
 	sendResponse(w, http.StatusCreated, respBody)
 }
 
 func (s *Server) GetAccountHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("received get account request")
 	id, err := strconv.Atoi(r.PathValue("accountId"))
 	if err != nil {
 		log.Printf("invalid account id in request: %s\n", err)
@@ -63,10 +66,12 @@ func (s *Server) GetAccountHandler(w http.ResponseWriter, r *http.Request) {
 		DocumentNumber: acc.DocumentNumber,
 	}
 
+	log.Printf("get account response: %+v\n", respBody)
 	sendResponse(w, http.StatusOK, respBody)
 }
 
 func (s *Server) SaveTransactionHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("received save transaction request")
 	defer r.Body.Close()
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -93,12 +98,13 @@ func (s *Server) SaveTransactionHandler(w http.ResponseWriter, r *http.Request) 
 	}
 
 	respBody := SaveTransactionResponse{
-		ID:            createdTx.ID,
-		OperationType: createdTx.OperationType,
-		Amount:        createdTx.Amount,
-		EventDate:     createdTx.EventDate,
+		ID:              createdTx.ID,
+		OperationTypeID: createdTx.OperationTypeID,
+		Amount:          createdTx.Amount,
+		EventDate:       createdTx.EventDate,
 	}
 
+	log.Printf("save transaction response: %+v\n", respBody)
 	sendResponse(w, http.StatusCreated, respBody)
 }
 

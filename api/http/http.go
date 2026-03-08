@@ -2,22 +2,23 @@ package http
 
 import (
 	"account-manager/config"
-	domain "account-manager/domain/model"
+	"account-manager/domain/core"
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 )
 
 type Server struct {
 	handler            http.Handler
-	AccountService     domain.AccountService
-	TransactionService domain.TransactionService
+	AccountService     core.AccountService
+	TransactionService core.TransactionService
 	requestTimeout     time.Duration
 	port               int
 }
 
-func NewServer(cfg config.Config, accSvc domain.AccountService, txSvc domain.TransactionService) *Server {
+func NewServer(cfg config.Config, accSvc core.AccountService, txSvc core.TransactionService) *Server {
 	sv := &Server{
 		AccountService:     accSvc,
 		TransactionService: txSvc,
@@ -40,7 +41,7 @@ func (s *Server) registerRoutes(mux *http.ServeMux) {
 
 func (s *Server) Start(ctx context.Context) error {
 	addr := fmt.Sprintf(":%d", s.port)
-	fmt.Printf("Server running on %s\n", addr)
+	log.Printf("server running on %s\n", addr)
 	err := http.ListenAndServe(addr, s.handler)
 	if err != nil {
 		return err
