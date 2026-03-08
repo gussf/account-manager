@@ -7,23 +7,26 @@ import (
 	"account-manager/domain/service/transaction"
 	"account-manager/repository/postgresql"
 	"context"
-	"database/sql"
 	"log"
 )
 
 func main() {
 	cfg, err := config.Load()
 	if err != nil {
-		log.Fatalf("failed to load configuration: %v", err)
+		log.Fatalf("failed to load configuration: %s", err)
 	}
 
-	pgStore := postgresql.NewStore(&sql.DB{}) // todo: config
+	pgStore, err := postgresql.NewStore(*cfg)
+	if err != nil {
+		log.Fatalf("failed to start postgres store: %s", err)
+	}
+
 	accSvc := account.NewService(pgStore)
 	txSvc := transaction.NewService(pgStore)
 
-	server := httpapi.NewServer(cfg, accSvc, txSvc)
+	server := httpapi.NewServer(*cfg, accSvc, txSvc)
 	err = server.Start(context.Background())
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("failed to start http server: %s", err)
 	}
 }

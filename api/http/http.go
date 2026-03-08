@@ -17,7 +17,7 @@ type Server struct {
 	port               int
 }
 
-func NewServer(cfg *config.Config, accSvc domain.AccountService, txSvc domain.TransactionService) *Server {
+func NewServer(cfg config.Config, accSvc domain.AccountService, txSvc domain.TransactionService) *Server {
 	sv := &Server{
 		AccountService:     accSvc,
 		TransactionService: txSvc,

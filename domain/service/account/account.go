@@ -32,8 +32,8 @@ func (s *Service) CreateAccount(ctx context.Context, req model.CreateAccountRequ
 	return createdAcc, nil
 }
 
-func (s *Service) GetAccount(ctx context.Context, accountID string) (*model.Account, error) {
-	if accountID == "" {
+func (s *Service) GetAccount(ctx context.Context, accountID int) (*model.Account, error) {
+	if accountID <= 0 {
 		return nil, errors.New("invalid account id")
 	}
 

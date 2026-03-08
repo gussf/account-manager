@@ -1,0 +1,7 @@
+http_server_port: 8081
+http_server_request_timeout: 10s
+database_hostname: localhost
+database_port: 5432
+database_name: account-manager
+database_user: postgres
+database_password: postgres

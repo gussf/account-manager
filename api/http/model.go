@@ -16,17 +16,17 @@ func (c CreateAccountRequest) toDomain() model.CreateAccountRequest {
 }
 
 type CreateAccountResponse struct {
-	Id             string `json:"account_id"`
+	Id             int    `json:"account_id"`
 	DocumentNumber string `json:"document_number"`
 }
 
 type GetAccountResponse struct {
-	Id             string `json:"account_id"`
+	Id             int    `json:"account_id"`
 	DocumentNumber string `json:"document_number"`
 }
 
 type SaveTransactionRequest struct {
-	AccountId     string              `json:"account_id"`
+	AccountId     int                 `json:"account_id"`
 	OperationType model.OperationType `json:"operation_type"`
 	Amount        int64               `json:"amount"`
 }
@@ -40,7 +40,7 @@ func (s SaveTransactionRequest) toDomain() model.SaveTransactionRequest {
 }
 
 type SaveTransactionResponse struct {
-	Id            string              `json:"id"`
+	Id            int                 `json:"id"`
 	OperationType model.OperationType `json:"operation_type"`
 	Amount        int64               `json:"amount"`
 	EventDate     time.Time           `json:"event_date,omitempty"`

@@ -1,0 +1,24 @@
+CREATE TABLE accounts (
+    id SERIAL PRIMARY KEY, -- not as optimal as uuidV7, but will use for simplicity
+    document_number TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE operation_type (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE,
+    description TEXT
+);
+
+CREATE TABLE transactions (
+    id SERIAL PRIMARY KEY, -- not as optimal as uuidV7, but will use for simplicity
+    account_id INTEGER NOT NULL,
+    operation_type_id INTEGER NOT NULL,
+    amount INTEGER NOT NULL,
+    event_date TIMESTAMP NOT NULL,
+    CONSTRAINT fk_account
+        FOREIGN KEY(account_id) 
+        REFERENCES accounts(id),
+    CONSTRAINT fk_operation_type
+        FOREIGN KEY(operation_type_id) 
+        REFERENCES operation_type(id)
+);

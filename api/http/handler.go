@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 func (s *Server) CreateAccountHandler(w http.ResponseWriter, r *http.Request) {
@@ -42,10 +43,16 @@ func (s *Server) CreateAccountHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) GetAccountHandler(w http.ResponseWriter, r *http.Request) {
-	id := r.PathValue("accountId")
+	id, err := strconv.Atoi(r.PathValue("accountId"))
+	if err != nil {
+		log.Printf("invalid account id in request: %s\n", err)
+		sendResponse(w, http.StatusBadRequest, "account id query parameter should be a number")
+		return
+	}
+
 	acc, err := s.AccountService.GetAccount(r.Context(), id)
 	if err != nil {
-		// todo: check if err is validation for badrequest
+		// todo: check if err is validation for badrequest, or notfound
 		log.Printf("failed to get account: %s\n", err)
 		sendResponse(w, http.StatusInternalServerError, "error getting account")
 		return

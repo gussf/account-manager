@@ -7,8 +7,8 @@ import (
 )
 
 type Transaction struct {
-	Id            string
-	AccountId     string
+	Id            int // Should be an UUID_V7 string, but will use int for simplicity
+	AccountId     int
 	OperationType OperationType
 	Amount        int64
 	EventDate     time.Time
@@ -19,21 +19,19 @@ type TransactionService interface {
 }
 
 type SaveTransactionRequest struct {
-	AccountID     string
+	AccountID     int
 	OperationType OperationType
 	Amount        int64
 }
 
 func (s *SaveTransactionRequest) Validate() error {
-	if s.AccountID == "" {
+	if s.AccountID <= 0 {
 		return errors.New("invalid account id")
 	}
 
 	if s.Amount == 0 {
 		return errors.New("amount cannot be zero")
 	}
-
-	// should we expect amount to be negative when op_type in (1,2,3)?
 
 	return nil
 }
