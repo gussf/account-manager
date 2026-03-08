@@ -72,19 +72,20 @@ func (s *Store) GetAccount(ctx context.Context, accountID int) (*model.Account, 
 }
 
 func (s *Store) SaveTransaction(ctx context.Context, req model.SaveTransactionRequest) (*model.Transaction, error) {
-	var id int
-	var eventDate time.Time
-	query := "INSERT INTO transactions (account_id, operation_type_id, amount, event_date) VALUES ($1, $2, $3, now()) RETURNING id, event_date"
-	err := s.db.QueryRowContext(ctx, query, req.AccountID, req.OperationType, req.Amount).Scan(&id, &eventDate)
+	var createdID int
+	var createdEventDate time.Time
+	var createdAmount float64
+	query := "INSERT INTO transactions (account_id, operation_type_id, amount, event_date) VALUES ($1, $2, $3, now()) RETURNING id, amount, event_date"
+	err := s.db.QueryRowContext(ctx, query, req.AccountID, req.OperationType, req.Amount).Scan(&createdID, &createdAmount, &createdEventDate)
 	if err != nil {
 		return nil, fmt.Errorf("failed to exec query: %w", err)
 	}
 
 	return &model.Transaction{
-		Id:            id,
+		Id:            createdID,
 		AccountId:     req.AccountID,
 		OperationType: req.OperationType,
-		Amount:        req.Amount,
-		EventDate:     eventDate,
+		Amount:        createdAmount,
+		EventDate:     createdEventDate,
 	}, nil
 }

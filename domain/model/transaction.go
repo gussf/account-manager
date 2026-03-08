@@ -10,7 +10,7 @@ type Transaction struct {
 	Id            int // Should be an UUID_V7 string, but will use int for simplicity
 	AccountId     int
 	OperationType OperationType
-	Amount        int64
+	Amount        float64
 	EventDate     time.Time
 }
 
@@ -21,7 +21,7 @@ type TransactionService interface {
 type SaveTransactionRequest struct {
 	AccountID     int
 	OperationType OperationType
-	Amount        int64
+	Amount        float64
 }
 
 func (s *SaveTransactionRequest) Validate() error {

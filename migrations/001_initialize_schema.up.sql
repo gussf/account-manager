@@ -13,7 +13,7 @@ CREATE TABLE transactions (
     id SERIAL PRIMARY KEY, -- not as optimal as uuidV7, but will use for simplicity
     account_id INTEGER NOT NULL,
     operation_type_id INTEGER NOT NULL,
-    amount INTEGER NOT NULL,
+    amount NUMERIC(15, 2) NOT NULL,
     event_date TIMESTAMP NOT NULL,
     CONSTRAINT fk_account
         FOREIGN KEY(account_id) 

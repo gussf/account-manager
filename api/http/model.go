@@ -28,7 +28,7 @@ type GetAccountResponse struct {
 type SaveTransactionRequest struct {
 	AccountId     int                 `json:"account_id"`
 	OperationType model.OperationType `json:"operation_type"`
-	Amount        int64               `json:"amount"`
+	Amount        float64             `json:"amount"`
 }
 
 func (s SaveTransactionRequest) toDomain() model.SaveTransactionRequest {
@@ -42,6 +42,6 @@ func (s SaveTransactionRequest) toDomain() model.SaveTransactionRequest {
 type SaveTransactionResponse struct {
 	Id            int                 `json:"id"`
 	OperationType model.OperationType `json:"operation_type"`
-	Amount        int64               `json:"amount"`
+	Amount        float64             `json:"amount"`
 	EventDate     time.Time           `json:"event_date,omitempty"`
 }
