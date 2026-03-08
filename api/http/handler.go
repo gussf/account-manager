@@ -1,33 +1,106 @@
 package http
 
 import (
-	"fmt"
+	"encoding/json"
+	"io"
+	"log"
 	"net/http"
 )
 
 func (s *Server) CreateAccountHandler(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusCreated)
-	// todo: create struct for response
-	fmt.Fprint(w, "Account created")
+	defer r.Body.Close()
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		log.Printf("failed to read create account request body: %s\n", err)
+		sendResponse(w, http.StatusBadRequest, "failed to read request body")
+		return
+	}
+
+	var req CreateAccountRequest
+	err = json.Unmarshal(body, &req)
+	if err != nil {
+		log.Printf("failed to unmarshal create account request body: %s\n", err)
+		sendResponse(w, http.StatusBadRequest, "failed to unmarshal request body: "+err.Error())
+		return
+	}
+
+	domainReq := req.toDomain()
+	createdAcc, err := s.AccountService.CreateAccount(domainReq)
+	if err != nil {
+		log.Printf("failed to create account: %s\n", err)
+		// todo: check if err is validation for badrequest, check if conflict
+		sendResponse(w, http.StatusInternalServerError, "error creating account")
+		return
+	}
+
+	respBody := CreateAccountResponse{
+		Id:             createdAcc.Id,
+		DocumentNumber: createdAcc.DocumentNumber,
+	}
+
+	sendResponse(w, http.StatusCreated, respBody)
 }
 
 func (s *Server) GetAccountHandler(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("accountId")
-
 	acc, err := s.AccountService.GetAccount(id)
 	if err != nil {
 		// todo: check if err is validation for badrequest
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("failed to fetch: " + err.Error()))
+		log.Printf("failed to get account: %s\n", err)
+		sendResponse(w, http.StatusInternalServerError, "error getting account")
 		return
 	}
 
-	// todo: create struct for response
-	fmt.Fprintf(w, "Fetching account: %s", acc.Id)
+	respBody := GetAccountResponse{
+		Id:             acc.Id,
+		DocumentNumber: acc.DocumentNumber,
+	}
+
+	sendResponse(w, http.StatusOK, respBody)
 }
 
 func (s *Server) SaveTransactionHandler(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusCreated)
-	// todo: create struct for response
-	fmt.Fprint(w, "Transaction processed")
+	defer r.Body.Close()
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		log.Printf("failed to read save transaction request body: %s\n", err)
+		sendResponse(w, http.StatusBadRequest, "failed to read request body")
+		return
+	}
+
+	var req SaveTransactionRequest
+	err = json.Unmarshal(body, &req)
+	if err != nil {
+		log.Printf("failed to unmarshal save transaction body: %s\n", err)
+		sendResponse(w, http.StatusBadRequest, "failed to unmarshal request body: "+err.Error())
+		return
+	}
+
+	domainReq := req.toDomain()
+	createdTx, err := s.TransactionService.SaveTransaction(domainReq)
+	if err != nil {
+		log.Printf("failed to save transaction: %s\n", err)
+		// todo: check if err is validation for badrequest, check if conflict
+		sendResponse(w, http.StatusInternalServerError, "error saving transaction")
+		return
+	}
+
+	respBody := SaveTransactionResponse{
+		Id:            createdTx.Id,
+		OperationType: createdTx.OperationType,
+		Amount:        createdTx.Amount,
+		EventDate:     createdTx.EventDate,
+	}
+
+	sendResponse(w, http.StatusCreated, respBody)
+}
+
+func sendResponse(w http.ResponseWriter, status int, payload any) {
+	w.WriteHeader(status)
+	resp, err := json.Marshal(payload)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	w.Write(resp)
 }

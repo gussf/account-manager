@@ -6,10 +6,11 @@ import (
 )
 
 type Transaction struct {
-	Id            string        `json:"id"`
-	OperationType OperationType `json:"operation_type"`
-	Amount        int64         `json:"amount"`
-	EventDate     time.Time     `json:"event_date,omitempty"`
+	Id            string
+	AccountId     string
+	OperationType OperationType
+	Amount        int64
+	EventDate     time.Time
 }
 
 type TransactionService interface {

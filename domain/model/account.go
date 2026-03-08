@@ -3,8 +3,8 @@ package model
 import "errors"
 
 type Account struct {
-	Id             string `json:"id"`
-	DocumentNumber string `json:"document_number"`
+	Id             string
+	DocumentNumber string
 }
 
 type AccountService interface {
