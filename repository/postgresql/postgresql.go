@@ -2,6 +2,7 @@ package postgresql
 
 import (
 	"account-manager/domain/model"
+	"context"
 	"database/sql"
 )
 
@@ -15,14 +16,14 @@ func NewStore(db *sql.DB) *Store {
 	}
 }
 
-func (s *Store) CreateAccount(model.CreateAccountRequest) (*model.Account, error) {
+func (s *Store) CreateAccount(ctx context.Context, req model.CreateAccountRequest) (*model.Account, error) {
 	return &model.Account{}, nil
 }
 
-func (s *Store) GetAccount(accountID string) (*model.Account, error) {
+func (s *Store) GetAccount(ctx context.Context, accountID string) (*model.Account, error) {
 	return &model.Account{}, nil
 }
 
-func (s *Store) SaveTransaction(model.SaveTransactionRequest) (*model.Transaction, error) {
+func (s *Store) SaveTransaction(ctx context.Context, req model.SaveTransactionRequest) (*model.Transaction, error) {
 	return &model.Transaction{}, nil
 }

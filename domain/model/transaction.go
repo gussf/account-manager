@@ -1,6 +1,7 @@
 package model
 
 import (
+	"context"
 	"errors"
 	"time"
 )
@@ -14,7 +15,7 @@ type Transaction struct {
 }
 
 type TransactionService interface {
-	SaveTransaction(SaveTransactionRequest) (*Transaction, error)
+	SaveTransaction(ctx context.Context, req SaveTransactionRequest) (*Transaction, error)
 }
 
 type SaveTransactionRequest struct {

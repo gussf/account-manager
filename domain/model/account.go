@@ -1,6 +1,9 @@
 package model
 
-import "errors"
+import (
+	"context"
+	"errors"
+)
 
 type Account struct {
 	Id             string
@@ -8,8 +11,8 @@ type Account struct {
 }
 
 type AccountService interface {
-	CreateAccount(CreateAccountRequest) (*Account, error)
-	GetAccount(accountID string) (*Account, error)
+	CreateAccount(ctx context.Context, req CreateAccountRequest) (*Account, error)
+	GetAccount(ctx context.Context, accountID string) (*Account, error)
 }
 
 type CreateAccountRequest struct {

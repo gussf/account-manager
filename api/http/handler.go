@@ -25,7 +25,7 @@ func (s *Server) CreateAccountHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	domainReq := req.toDomain()
-	createdAcc, err := s.AccountService.CreateAccount(domainReq)
+	createdAcc, err := s.AccountService.CreateAccount(r.Context(), domainReq)
 	if err != nil {
 		log.Printf("failed to create account: %s\n", err)
 		// todo: check if err is validation for badrequest, check if conflict
@@ -43,7 +43,7 @@ func (s *Server) CreateAccountHandler(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) GetAccountHandler(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("accountId")
-	acc, err := s.AccountService.GetAccount(id)
+	acc, err := s.AccountService.GetAccount(r.Context(), id)
 	if err != nil {
 		// todo: check if err is validation for badrequest
 		log.Printf("failed to get account: %s\n", err)
@@ -77,7 +77,7 @@ func (s *Server) SaveTransactionHandler(w http.ResponseWriter, r *http.Request) 
 	}
 
 	domainReq := req.toDomain()
-	createdTx, err := s.TransactionService.SaveTransaction(domainReq)
+	createdTx, err := s.TransactionService.SaveTransaction(r.Context(), domainReq)
 	if err != nil {
 		log.Printf("failed to save transaction: %s\n", err)
 		// todo: check if err is validation for badrequest, check if conflict
