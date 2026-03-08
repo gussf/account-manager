@@ -12,7 +12,9 @@ type Service struct {
 }
 
 func NewService(store repository.Store) *Service {
-	return &Service{}
+	return &Service{
+		store: store,
+	}
 }
 
 func (s *Service) SaveTransaction(ctx context.Context, req model.SaveTransactionRequest) (*model.Transaction, error) {

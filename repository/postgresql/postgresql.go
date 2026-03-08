@@ -44,7 +44,7 @@ func NewStore(cfg config.Config) (*Store, error) {
 
 func (s *Store) CreateAccount(ctx context.Context, req model.CreateAccountRequest) (*model.Account, error) {
 	var id int
-	query := "INSERT INTO accounts VALUES ($1) RETURNING id"
+	query := "INSERT INTO accounts (document_number) VALUES ($1) RETURNING id"
 	err := s.db.QueryRowContext(ctx, query, req.DocumentNumber).Scan(&id)
 	if err != nil {
 		return nil, fmt.Errorf("failed to exec query: %w", err)
@@ -74,11 +74,10 @@ func (s *Store) GetAccount(ctx context.Context, accountID int) (*model.Account, 
 func (s *Store) SaveTransaction(ctx context.Context, req model.SaveTransactionRequest) (*model.Transaction, error) {
 	var id int
 	var eventDate time.Time
-	query := "INSERT INTO transactions (id, account_id, operation_type_id, amount, event_date) VALUES ($1, $2, $3, $4, now()) RETURNING id, event_date"
-	err := s.db.QueryRowContext(ctx, query, id, req.AccountID, req.OperationType, req.Amount).Scan(&id, &eventDate)
+	query := "INSERT INTO transactions (account_id, operation_type_id, amount, event_date) VALUES ($1, $2, $3, now()) RETURNING id, event_date"
+	err := s.db.QueryRowContext(ctx, query, req.AccountID, req.OperationType, req.Amount).Scan(&id, &eventDate)
 	if err != nil {
 		return nil, fmt.Errorf("failed to exec query: %w", err)
-
 	}
 
 	return &model.Transaction{
