@@ -1,7 +1,9 @@
 package http
 
 import (
+	"account-manager/domain/core"
 	"encoding/json"
+	"errors"
 	"log/slog"
 	"net/http"
 	"strconv"
@@ -20,9 +22,22 @@ func (s *Server) CreateAccountHandler(w http.ResponseWriter, r *http.Request) {
 	domainReq := req.toDomain()
 	createdAcc, err := s.AccountService.CreateAccount(r.Context(), domainReq)
 	if err != nil {
-		slog.Error("failed to create account", "error", err, "status", http.StatusInternalServerError)
-		// todo: check if err is validation for badrequest, check if conflict
-		sendResponse(w, http.StatusInternalServerError, errorMessage("error creating account"))
+		var status int
+		var msg any
+		switch {
+		case errors.Is(err, core.ErrValidation):
+			status = http.StatusBadRequest
+			msg = errorMessage(err.Error())
+		case errors.Is(err, core.ErrAlreadyExists):
+			status = http.StatusConflict
+			msg = errorMessage("account already exists")
+		default:
+			status = http.StatusInternalServerError
+			msg = errorMessage("error creating account")
+		}
+
+		slog.Error("failed to create account", "error", err, "status", status)
+		sendResponse(w, status, msg)
 		return
 	}
 
@@ -37,6 +52,7 @@ func (s *Server) CreateAccountHandler(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) GetAccountHandler(w http.ResponseWriter, r *http.Request) {
 	slog.Info("received get account request")
+
 	id, err := strconv.Atoi(r.PathValue("accountId"))
 	if err != nil {
 		slog.Error("invalid account id in request", "error", err, "status", http.StatusBadRequest)
@@ -46,9 +62,22 @@ func (s *Server) GetAccountHandler(w http.ResponseWriter, r *http.Request) {
 
 	acc, err := s.AccountService.GetAccount(r.Context(), id)
 	if err != nil {
-		// todo: check if err is validation for badrequest, or notfound
-		slog.Error("failed to get account", "error", err, "status", http.StatusInternalServerError)
-		sendResponse(w, http.StatusInternalServerError, errorMessage("error getting account"))
+		var status int
+		var msg any
+		switch {
+		case errors.Is(err, core.ErrValidation):
+			status = http.StatusBadRequest
+			msg = errorMessage(err.Error())
+		case errors.Is(err, core.ErrNotFound):
+			status = http.StatusNotFound
+			msg = errorMessage("account not found")
+		default:
+			status = http.StatusInternalServerError
+			msg = errorMessage("error getting account")
+		}
+
+		slog.Error("failed to get account", "error", err, "status", status)
+		sendResponse(w, status, msg)
 		return
 	}
 
@@ -74,9 +103,22 @@ func (s *Server) SaveTransactionHandler(w http.ResponseWriter, r *http.Request) 
 	domainReq := req.toDomain()
 	createdTx, err := s.TransactionService.SaveTransaction(r.Context(), domainReq)
 	if err != nil {
-		slog.Error("failed to save transaction", "error", err, "status", http.StatusInternalServerError)
-		// todo: check if err is validation for badrequest, check if conflict
-		sendResponse(w, http.StatusInternalServerError, errorMessage("error saving transaction"))
+		var status int
+		var msg any
+		switch {
+		case errors.Is(err, core.ErrValidation):
+			status = http.StatusBadRequest
+			msg = errorMessage(err.Error())
+		case errors.Is(err, core.ErrNotFound):
+			status = http.StatusNotFound
+			msg = errorMessage("account id or operation type id not found")
+		default:
+			status = http.StatusInternalServerError
+			msg = errorMessage("error saving transaction")
+		}
+
+		slog.Error("failed to save transaction", "error", err, "status", status)
+		sendResponse(w, status, msg)
 		return
 	}
 

@@ -5,10 +5,11 @@ import (
 	"account-manager/domain/core"
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"time"
 
-	_ "github.com/lib/pq"
+	"github.com/lib/pq"
 )
 
 type Store struct {
@@ -47,6 +48,13 @@ func (s *Store) CreateAccount(ctx context.Context, req core.CreateAccountRequest
 	query := "INSERT INTO accounts (document_number) VALUES ($1) RETURNING id"
 	err := s.db.QueryRowContext(ctx, query, req.DocumentNumber).Scan(&id)
 	if err != nil {
+		if pgErr, ok := err.(*pq.Error); ok {
+			switch pgErr.Code {
+			case "23505":
+				return nil, fmt.Errorf("%w: account document number conflict: %s", core.ErrAlreadyExists, err)
+			}
+		}
+
 		return nil, fmt.Errorf("failed to exec query: %w", err)
 	}
 
@@ -62,6 +70,10 @@ func (s *Store) GetAccount(ctx context.Context, accountID int) (*core.Account, e
 	query := "SELECT id, document_number FROM accounts WHERE id=$1"
 	err := s.db.QueryRowContext(ctx, query, accountID).Scan(&foundID, &foundDocNumber)
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, fmt.Errorf("%w: account %d not found", core.ErrNotFound, accountID)
+		}
+
 		return nil, fmt.Errorf("failed to exec query: %w", err)
 	}
 
@@ -78,6 +90,13 @@ func (s *Store) SaveTransaction(ctx context.Context, req core.SaveTransactionReq
 	query := "INSERT INTO transactions (account_id, operation_type_id, amount, event_date) VALUES ($1, $2, $3, now()) RETURNING id, amount, event_date"
 	err := s.db.QueryRowContext(ctx, query, req.AccountID, req.OperationTypeID, req.Amount).Scan(&createdID, &createdAmount, &createdEventDate)
 	if err != nil {
+		if pgErr, ok := err.(*pq.Error); ok {
+			switch pgErr.Code {
+			case "23503":
+				return nil, fmt.Errorf("%w: account id or operation type id not found: %s", core.ErrNotFound, err)
+			}
+		}
+
 		return nil, fmt.Errorf("failed to exec query: %w", err)
 	}
 

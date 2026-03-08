@@ -21,7 +21,7 @@ func NewService(store repository.Store) *Service {
 func (s *Service) SaveTransaction(ctx context.Context, req core.SaveTransactionRequest) (*core.Transaction, error) {
 	err := req.Validate()
 	if err != nil {
-		return nil, fmt.Errorf("validate save transaction request: %w", err)
+		return nil, fmt.Errorf("%w: save transaction request: %s", core.ErrValidation, err)
 	}
 
 	operationStrategy, err := core.ResolveOperationStrategy(req.OperationTypeID)

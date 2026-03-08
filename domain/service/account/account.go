@@ -21,7 +21,7 @@ func NewService(store repository.Store) *Service {
 func (s *Service) CreateAccount(ctx context.Context, req core.CreateAccountRequest) (*core.Account, error) {
 	err := req.Validate()
 	if err != nil {
-		return nil, fmt.Errorf("validate create account request: %w", err)
+		return nil, fmt.Errorf("%w: create account request: %s", core.ErrValidation, err)
 	}
 
 	createdAcc, err := s.store.CreateAccount(ctx, req)

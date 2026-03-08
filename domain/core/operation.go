@@ -31,7 +31,7 @@ type OperationStrategy interface {
 func ResolveOperationStrategy(operationTypeID int) (OperationStrategy, error) {
 	strategy, ok := operationStrategyByID[operationTypeID]
 	if !ok {
-		return nil, fmt.Errorf("operation type with id %d is not mapped", operationTypeID)
+		return nil, fmt.Errorf("%w: operation type with id %d is not mapped", ErrNotFound, operationTypeID)
 	}
 	return strategy, nil
 }
