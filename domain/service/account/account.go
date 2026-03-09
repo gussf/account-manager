@@ -4,7 +4,6 @@ import (
 	"account-manager/domain/core"
 	"account-manager/repository"
 	"context"
-	"errors"
 	"fmt"
 )
 
@@ -34,7 +33,7 @@ func (s *Service) CreateAccount(ctx context.Context, req core.CreateAccountReque
 
 func (s *Service) GetAccount(ctx context.Context, accountID int) (*core.Account, error) {
 	if accountID <= 0 {
-		return nil, errors.New("invalid account id")
+		return nil, fmt.Errorf("%w: invalid account id", core.ErrValidation)
 	}
 
 	acc, err := s.store.GetAccount(ctx, accountID)

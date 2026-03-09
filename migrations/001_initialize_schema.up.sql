@@ -13,7 +13,7 @@ CREATE TABLE transactions (
     account_id INTEGER NOT NULL,
     operation_type_id INTEGER NOT NULL,
     amount NUMERIC(15, 2) NOT NULL,
-    event_date TIMESTAMP NOT NULL,
+    event_date TIMESTAMPTZ NOT NULL,
     CONSTRAINT fk_account
         FOREIGN KEY(account_id) 
         REFERENCES accounts(id),

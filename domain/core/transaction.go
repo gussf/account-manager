@@ -29,6 +29,10 @@ func (s *SaveTransactionRequest) Validate() error {
 		return errors.New("invalid account id")
 	}
 
+	if s.OperationTypeID <= 0 {
+		return errors.New("invalid operation type id")
+	}
+
 	if s.Amount == 0 {
 		return errors.New("amount cannot be zero")
 	}

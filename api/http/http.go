@@ -39,6 +39,10 @@ func (s *Server) registerRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("POST /transactions", s.SaveTransactionHandler)
 }
 
+func (s *Server) Handler() http.Handler {
+	return s.handler
+}
+
 func (s *Server) Start(ctx context.Context) error {
 	addr := fmt.Sprintf(":%d", s.port)
 	slog.Info("server running", "address", addr)

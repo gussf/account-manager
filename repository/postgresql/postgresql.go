@@ -43,6 +43,10 @@ func NewStore(cfg config.Config) (*Store, error) {
 	return store, nil
 }
 
+func (s *Store) DB() *sql.DB {
+	return s.db
+}
+
 func (s *Store) CreateAccount(ctx context.Context, req core.CreateAccountRequest) (*core.Account, error) {
 	var id int
 	query := "INSERT INTO accounts (document_number) VALUES ($1) RETURNING id"

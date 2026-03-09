@@ -124,6 +124,7 @@ func (s *Server) SaveTransactionHandler(w http.ResponseWriter, r *http.Request) 
 
 	respBody := SaveTransactionResponse{
 		ID:              createdTx.ID,
+		AccountID:       createdTx.AccountID,
 		OperationTypeID: createdTx.OperationTypeID,
 		Amount:          createdTx.Amount,
 		EventDate:       createdTx.EventDate,
