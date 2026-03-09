@@ -20,6 +20,7 @@ func (s *IntegrationSuite) Test_SaveTransaction() {
 		req                  apihttp.SaveTransactionRequest
 		body                 string
 		wantStatus           int
+		wantAmount           float64
 		wantSavedTransaction bool
 	}{
 		{
@@ -30,6 +31,7 @@ func (s *IntegrationSuite) Test_SaveTransaction() {
 				Amount:          50.0,
 			},
 			wantStatus:           http.StatusCreated,
+			wantAmount:           -50.00,
 			wantSavedTransaction: true,
 		},
 		{
@@ -40,6 +42,7 @@ func (s *IntegrationSuite) Test_SaveTransaction() {
 				Amount:          30.45,
 			},
 			wantStatus:           http.StatusCreated,
+			wantAmount:           -30.45,
 			wantSavedTransaction: true,
 		},
 		{
@@ -50,6 +53,7 @@ func (s *IntegrationSuite) Test_SaveTransaction() {
 				Amount:          20.3,
 			},
 			wantStatus:           http.StatusCreated,
+			wantAmount:           -20.3,
 			wantSavedTransaction: true,
 		},
 		{
@@ -60,6 +64,7 @@ func (s *IntegrationSuite) Test_SaveTransaction() {
 				Amount:          10.50,
 			},
 			wantStatus:           http.StatusCreated,
+			wantAmount:           10.50,
 			wantSavedTransaction: true,
 		},
 		{
@@ -91,13 +96,20 @@ func (s *IntegrationSuite) Test_SaveTransaction() {
 			assert.NoError(s.T(), err)
 			assert.Equal(s.T(), tt.wantStatus, resp.StatusCode)
 
-			if tt.wantSavedTransaction {
-				var tx apihttp.SaveTransactionResponse
+			var tx apihttp.SaveTransactionResponse
+			if tt.wantStatus == http.StatusCreated {
 				err = json.NewDecoder(resp.Body).Decode(&tx)
 				assert.NoError(s.T(), err)
+			}
 
+			if tt.wantAmount != 0 {
+				assert.Equal(s.T(), tt.wantAmount, tx.Amount)
+			}
+
+			if tt.wantSavedTransaction {
 				s.AssertTransactionSavedInDB(tx)
 			}
+
 		})
 	}
 }
