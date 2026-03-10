@@ -9,9 +9,8 @@
 ## Assumptions/Decisions
 - **Amount**: 
     - While the industry standard is to use the `Amount` in cents (int instead of float) to avoid precision problems, the specification describes the request amount as a float type, so I assumed I was expected to follow it.
-    - Assumed that the HTTP request can have negative and positive values, so I decided to not to check if < 0.
+    - Assumed that the `Amount` in the HTTP request can have negative and positive values, so I decided to not to check if < 0.
 - **OperationTypeID**: I am not querying the operation types from the database, in this case I opted to just map the ids in the code for simplicity
-
 
 ## Architecture
 
