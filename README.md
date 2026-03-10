@@ -9,8 +9,9 @@
 ## Assumptions/Decisions
 - **Amount**: 
     - While the industry standard is to use the `Amount` in cents (int instead of float) to avoid precision problems, the specification describes the request amount as a float type, so I assumed I was expected to follow it.
-    - Assumed that the `Amount` in the HTTP request can have negative and positive values, so I decided to not to check if < 0.
+    - Assumed that the `Amount` in the request is always a positive value, and the type of operation decides the actual sign.
 - **OperationTypeID**: I am not querying the operation types from the database, in this case I opted to just map the ids in the code for simplicity
+- **Contract**: Decided to return the created objects (accounts, transactions) in the response of the requests for ease of use.
 
 ## Architecture
 
@@ -30,6 +31,28 @@ The available configs are declared in `config.yaml`. They can be overwritten by 
 ```bash
 make docker-up
 ```
+
+#### Example requests
+
+```bash
+# Create an account
+curl -X POST http://localhost:8081/accounts \
+    -H "Content-Type: application/json" \
+    -d '{"document_number": "123"}'
+```
+
+```bash
+# Get an account
+curl http://localhost:8081/accounts/1
+```
+
+```bash
+# Create a transaction
+curl -X POST http://localhost:8081/transactions \
+    -H "Content-Type: application/json" \
+    -d '{"account_id": 1, "operation_type_id": 1, "amount": 100}'
+```
+
 
 ## Tests
 

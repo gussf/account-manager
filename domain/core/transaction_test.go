@@ -37,10 +37,10 @@ func TestSaveTransactionRequest_Validate(t *testing.T) {
 			req: SaveTransactionRequest{
 				AccountID:       1,
 				OperationTypeID: 1,
-				Amount:          0,
+				Amount:          -10,
 			},
 			wantErr: true,
-			errMsg:  "amount cannot be zero",
+			errMsg:  "amount cannot be equal or less than zero",
 		},
 		{
 			name: "should fail when invalid operation type id",
