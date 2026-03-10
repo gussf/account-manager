@@ -39,6 +39,7 @@ make docker-up
 
 #### Running all tests:
 ```bash
+# Requires docker to be running
 make test
 ```
 
