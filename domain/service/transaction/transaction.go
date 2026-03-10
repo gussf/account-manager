@@ -24,7 +24,7 @@ func (s *Service) SaveTransaction(ctx context.Context, req core.SaveTransactionR
 		return nil, fmt.Errorf("%w: save transaction request: %s", core.ErrValidation, err)
 	}
 
-	operationStrategy, err := core.ResolveOperationStrategy(req.OperationTypeID)
+	operationStrategy, err := core.DecideOperationStrategy(req.OperationTypeID)
 	if err != nil {
 		return nil, fmt.Errorf("resolve operation strategy for transaction: %w", err)
 	}

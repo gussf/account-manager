@@ -17,10 +17,10 @@ const (
 )
 
 var operationStrategyByID = map[int]OperationStrategy{
-	PurchaseOperationType:                 &DebitStrategy{operation: PurchaseOperationName},
-	PurchaseWithInstallmentsOperationType: &DebitStrategy{operation: PurchaseWithInstallmentsOperationName},
-	WithdrawalOperationType:               &DebitStrategy{operation: WithdrawalOperationName},
-	CreditVoucherOperationType:            &CreditStrategy{operation: CreditVoucherOperationName},
+	PurchaseOperationType:                 &debitStrategy{operation: PurchaseOperationName},
+	PurchaseWithInstallmentsOperationType: &debitStrategy{operation: PurchaseWithInstallmentsOperationName},
+	WithdrawalOperationType:               &debitStrategy{operation: WithdrawalOperationName},
+	CreditVoucherOperationType:            &creditStrategy{operation: CreditVoucherOperationName},
 }
 
 type OperationStrategy interface {
@@ -28,7 +28,7 @@ type OperationStrategy interface {
 	Operation() string
 }
 
-func ResolveOperationStrategy(operationTypeID int) (OperationStrategy, error) {
+func DecideOperationStrategy(operationTypeID int) (OperationStrategy, error) {
 	strategy, ok := operationStrategyByID[operationTypeID]
 	if !ok {
 		return nil, fmt.Errorf("%w: operation type with id %d is not mapped", ErrNotFound, operationTypeID)
@@ -36,30 +36,30 @@ func ResolveOperationStrategy(operationTypeID int) (OperationStrategy, error) {
 	return strategy, nil
 }
 
-type DebitStrategy struct {
+type debitStrategy struct {
 	operation string
 }
 
-func (d *DebitStrategy) Apply(req *SaveTransactionRequest) {
+func (d *debitStrategy) Apply(req *SaveTransactionRequest) {
 	if req.Amount > 0 {
 		req.Amount *= -1
 	}
 }
 
-func (d *DebitStrategy) Operation() string {
+func (d *debitStrategy) Operation() string {
 	return d.operation
 }
 
-type CreditStrategy struct {
+type creditStrategy struct {
 	operation string
 }
 
-func (c *CreditStrategy) Apply(req *SaveTransactionRequest) {
+func (c *creditStrategy) Apply(req *SaveTransactionRequest) {
 	if req.Amount < 0 {
 		req.Amount *= -1
 	}
 }
 
-func (d *CreditStrategy) Operation() string {
+func (d *creditStrategy) Operation() string {
 	return d.operation
 }

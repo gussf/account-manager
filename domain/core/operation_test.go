@@ -48,7 +48,7 @@ func TestResolveOperationStrategy(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			strategy, err := ResolveOperationStrategy(tt.operationTypeID)
+			strategy, err := DecideOperationStrategy(tt.operationTypeID)
 			if tt.wantErr {
 				assert.ErrorIs(t, err, ErrNotFound)
 				assert.ErrorContains(t, err, tt.errMsg)
@@ -80,7 +80,7 @@ func TestDebitStrategy_Apply(t *testing.T) {
 		},
 	}
 
-	strategy := &DebitStrategy{operation: "TestDebit"}
+	strategy := &debitStrategy{operation: "TestDebit"}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -109,7 +109,7 @@ func TestCreditStrategy_Apply(t *testing.T) {
 		},
 	}
 
-	strategy := &CreditStrategy{operation: "TestCredit"}
+	strategy := &creditStrategy{operation: "TestCredit"}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
