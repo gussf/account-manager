@@ -9,7 +9,7 @@ FROM scratch
 
 WORKDIR /app
 
-COPY --from=build /app/local.config.yaml .
+COPY --from=build /app/config.yaml .
 COPY --from=build /app/migrations /app/migrations
 COPY --from=build /app/main .
 
